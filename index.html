@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineMatch — Discover Movies You'll Love</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <a class="brand" href="#" onclick="showPage('home')"><span>🎬</span> CineMatch</a>
+    <nav>
+      <button onclick="showPage('home')">Home</button>
+      <button onclick="showPage('discover')">Discover</button>
+      <button onclick="showPage('ratings')">My Ratings</button>
+      <button onclick="showPage('watchlist')">Watchlist</button>
+      <button onclick="showPage('profile')">Profile</button>
+      <button id="adminNav" class="hidden" onclick="showPage('admin')">Admin</button>
+    </nav>
+    <div class="nav-actions">
+      <span id="userLabel">Guest</span>
+      <button class="outline-btn" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="landing" class="page landing-page">
+      <div class="hero-content">
+        <span class="eyebrow">PERSONALIZED MOVIE DISCOVERY</span>
+        <h1>Discover Movies<br><span>You'll Love.</span></h1>
+        <p>CineMatch learns from your favorite genres and ratings to help you find your next favorite movie.</p>
+        <div class="hero-buttons">
+          <button class="primary-btn" onclick="showPage('register')">Get Started</button>
+          <button class="outline-btn" onclick="showPage('login')">Login</button>
+        </div>
+        <div class="feature-row">
+          <span>⭐ Personalized</span><span>🎯 Explainable</span><span>❤️ Watchlist</span>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="poster-stack">
+          <div class="poster p1">INCEPTION</div>
+          <div class="poster p2">INTERSTELLAR</div>
+          <div class="poster p3">CINEMATCH</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="login" class="page auth-page hidden">
+      <div class="auth-card">
+        <h2>Welcome Back</h2><p>Login to continue discovering movies.</p>
+        <form onsubmit="login(event)">
+          <label>Email<input id="loginEmail" type="email" required></label>
+          <label>Password<input id="loginPassword" type="password" required></label>
+          <button class="primary-btn full" type="submit">Login</button>
+        </form>
+        <p class="switch">New to CineMatch? <button onclick="showPage('register')">Create account</button></p>
+      </div>
+    </section>
+
+    <section id="register" class="page auth-page hidden">
+      <div class="auth-card">
+        <h2>Create Account</h2><p>Start building your personalized movie profile.</p>
+        <form onsubmit="register(event)">
+          <label>Name<input id="regName" required></label>
+          <label>Email<input id="regEmail" type="email" required></label>
+          <label>Password<input id="regPassword" type="password" minlength="4" required></label>
+          <button class="primary-btn full" type="submit">Register</button>
+        </form>
+        <p class="switch">Already have an account? <button onclick="showPage('login')">Login</button></p>
+      </div>
+    </section>
+
+    <section id="genres" class="page hidden">
+      <div class="section-heading">
+        <span class="eyebrow">STEP 1</span><h2>Choose Your Favorite Genres</h2>
+        <p>Select at least 3 genres. CineMatch will use them to personalize your first recommendations.</p>
+      </div>
+      <div id="genreGrid" class="genre-grid"></div>
+      <div class="center"><button class="primary-btn" onclick="saveGenres()">Continue</button></div>
+    </section>
+
+    <section id="rateSetup" class="page hidden">
+      <div class="section-heading"><span class="eyebrow">STEP 2</span><h2>Rate Some Movies</h2>
+        <p>Rate at least 5 movies to unlock stronger personalization.</p></div>
+      <div id="setupMovies" class="movie-grid"></div>
+      <div class="center"><button class="primary-btn" onclick="finishOnboarding()">See My Recommendations</button></div>
+    </section>
+
+    <section id="home" class="page hidden">
+      <div class="page-hero">
+        <div><span class="eyebrow">WELCOME TO CINEMATCH</span><h1 id="homeTitle">Recommended For You</h1>
+        <p id="homeSubtitle">Recommendations become smarter as you rate more movies.</p></div>
+        <button class="primary-btn" onclick="showPage('discover')">Discover Movies</button>
+      </div>
+      <section><div class="section-heading compact"><h2>Recommended For You</h2><p id="reasonText"></p></div><div id="recommended" class="movie-grid"></div></section>
+      <section><div class="section-heading compact"><h2>Because You Liked</h2></div><div id="becauseLiked" class="movie-grid"></div></section>
+      <section><div class="section-heading compact"><h2>Top Rated Movies</h2></div><div id="topRated" class="movie-grid"></div></section>
+      <section><div class="section-heading compact"><h2>Trending Movies</h2></div><div id="trending" class="movie-grid"></div></section>
+    </section>
+
+    <section id="discover" class="page hidden">
+      <div class="section-heading"><span class="eyebrow">EXPLORE</span><h2>Discover Movies</h2><p>Search by title, genre, actor, director or year.</p></div>
+      <div class="search-panel">
+        <input id="searchInput" placeholder="🔎 Search movies, actors, directors..." oninput="renderDiscover()">
+        <select id="genreFilter" onchange="renderDiscover()"><option value="">All genres</option></select>
+        <select id="yearFilter" onchange="renderDiscover()"><option value="">All years</option></select>
+        <select id="sortFilter" onchange="renderDiscover()">
+          <option value="rating">Highest rated</option><option value="popularity">Most popular</option>
+          <option value="year">Newest</option><option value="alpha">Alphabetical</option>
+        </select>
+      </div>
+      <div id="discoverGrid" class="movie-grid"></div>
+    </section>
+
+    <section id="details" class="page hidden"><div id="detailsContent"></div></section>
+
+    <section id="ratings" class="page hidden">
+      <div class="section-heading"><span class="eyebrow">YOUR ACTIVITY</span><h2>My Ratings</h2><p>Movies you have rated and your rating history.</p></div>
+      <div id="ratingsGrid" class="movie-grid"></div>
+    </section>
+
+    <section id="watchlist" class="page hidden">
+      <div class="section-heading"><span class="eyebrow">SAVE FOR LATER</span><h2>My Watchlist</h2><p>Keep movies you want to watch in one place.</p></div>
+      <div id="watchlistGrid" class="movie-grid"></div>
+    </section>
+
+    <section id="profile" class="page hidden">
+      <div class="profile-card">
+        <div class="avatar" id="profileAvatar">C</div>
+        <div><h2 id="profileName">CineMatch User</h2><p id="profileEmail"></p></div>
+      </div>
+      <div class="stats-row" id="profileStats"></div>
+      <div class="section-heading"><h2>Your Favorite Genres</h2></div>
+      <div id="profileGenres" class="genre-pills"></div>
+      <button class="outline-btn" onclick="showPage('genres')">Edit Genres</button>
+    </section>
+
+    <section id="admin" class="page hidden">
+      <div class="section-heading"><span class="eyebrow">ADMIN AREA</span><h2>Admin Dashboard</h2><p>Prototype statistics and movie management.</p></div>
+      <div id="adminStats" class="stats-row"></div>
+      <div class="admin-panel">
+        <h3>Movie Catalogue</h3>
+        <div id="adminMovies"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast"></div>
+  <footer>CineMatch • Personalized Movie Recommendation System • Mini Project</footer>
+  <script src="script.js"></script>
+</body>
+</html>
